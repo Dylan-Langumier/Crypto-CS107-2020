@@ -1,5 +1,9 @@
 package crypto;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import static crypto.Helper.cleanString;
 import static crypto.Helper.stringToBytes;
 import static crypto.Helper.bytesToString;
@@ -34,6 +38,28 @@ public class Main {
 		testCaesar(messageBytes, keyBytes[0]);
 		
 		// TODO: TO BE COMPLETED
+    
+    // SHELL
+		BufferedReader reader = new BufferedReader(new InputStreamReader((System.in)));
+		String input = "";
+		try {
+			System.out.println("yo it's the crypto");
+			while (!input.equalsIgnoreCase("stop")) {
+				input = reader.readLine();
+				if (input.equalsIgnoreCase("decrypt")) {
+					System.out.println("zzzzz");
+				} else if(input.equalsIgnoreCase("stop")) {
+					System.out.println("Exiting program...");
+					break;
+				} else {
+					System.out.println(input + " isn't a command.");
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		
 		
 	}

@@ -35,9 +35,12 @@ public class Decrypt {
 	 * @param bruteForceResult a 2D byte array containing the result of a brute force method
 	 */
 	public static String arrayToString(byte[][] bruteForceResult) {
-		//TODO : COMPLETE THIS METHOD
-		
-		return null; //TODO: to be modified
+		StringBuilder decypherText = new StringBuilder();
+		for(int i = 0; i < bruteForceResult.length; i++) {
+			decypherText.append(Helper.bytesToString(bruteForceResult[i])).append("\n");
+		}
+		return decypherText.toString(); 		
+
 	}
 	
 	
@@ -50,9 +53,13 @@ public class Decrypt {
 	 * @return a 2D byte array containing all the possibilities
 	 */
 	public static byte[][] caesarBruteForce(byte[] cipher) {
-		//TODO : COMPLETE THIS METHOD
 
-		return null; //TODO: to be modified
+		assert(cipher != null);
+		byte[][] results = new byte[256][cipher.length];
+		for(int i = 0; i < 256; i++) {
+			results[i] = Encrypt.caesar(cipher, (byte) i);
+		}
+		return results; 
 	}	
 	
 	
