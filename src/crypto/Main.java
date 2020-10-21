@@ -1,8 +1,8 @@
 package crypto;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 
 import static crypto.Helper.cleanString;
 import static crypto.Helper.stringToBytes;
@@ -38,7 +38,8 @@ public class Main {
 		testCaesar(messageBytes, keyBytes[0]);
 		
 		// TODO: TO BE COMPLETED
-
+    
+    // SHELL
 		BufferedReader reader = new BufferedReader(new InputStreamReader((System.in)));
 		String input = "";
 		try {
@@ -58,6 +59,7 @@ public class Main {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 		
 		
 	}

@@ -45,6 +45,7 @@ public class Encrypt {
 	 */
 	public static byte[] caesar(byte[] plainText, byte key, boolean spaceEncoding) {
 		assert(plainText != null);
+
 		byte[] cypherByte = new byte[plainText.length];
 		for (int i = 0 ; i < plainText.length; i++) {
 			if(!spaceEncoding && plainText[i] == (byte) 32) cypherByte[i] = (byte) 32;
@@ -64,6 +65,7 @@ public class Encrypt {
 	public static byte[] caesar(byte[] plainText, byte key) {
 		return caesar(plainText, key, false);
 	}
+
 	//-----------------------XOR-------------------------
 	
 	/**
@@ -84,6 +86,7 @@ public class Encrypt {
 	 * @return an encoded byte array
 	 */
 	public static byte[] xor(byte[] plainText, byte key) {
+
 		return xor(plainText, key, false);
 	}
 	//-----------------------Vigenere-------------------------
@@ -113,6 +116,7 @@ public class Encrypt {
 	 */
 	public static byte[] vigenere(byte[] plainText, byte[] keyword) {
 		return vigenere(plainText, keyword, false);
+
 	}
 	
 	
