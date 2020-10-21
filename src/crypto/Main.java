@@ -47,6 +47,9 @@ public class Main {
 				input = reader.readLine();
 				if (input.equalsIgnoreCase("decrypt")) {
 					System.out.println("zzzzz");
+				} else if(input.equalsIgnoreCase("stop")) {
+					System.out.println("Exiting program...");
+					break;
 				} else {
 					System.out.println(input + " isn't a command.");
 				}
