@@ -25,11 +25,9 @@ public class Main {
 		String key = "2cF%5";
 		
 		String messageClean = cleanString(inputMessage);
-		
-		
+
 		byte[] messageBytes = stringToBytes(messageClean);
 		byte[] keyBytes = stringToBytes(key);
-		
 		
 		System.out.println("Original input sanitized : " + messageClean);
 		System.out.println();
@@ -41,18 +39,34 @@ public class Main {
     
     // SHELL
 		BufferedReader reader = new BufferedReader(new InputStreamReader((System.in)));
-		String input = "";
+		String input[];
 		try {
 			System.out.println("yo it's the crypto");
-			while (!input.equalsIgnoreCase("stop")) {
-				input = reader.readLine();
-				if (input.equalsIgnoreCase("decrypt")) {
-					System.out.println("zzzzz");
-				} else if(input.equalsIgnoreCase("stop")) {
+			input = reader.readLine().split(" ");
+			while (!input[0].equalsIgnoreCase("stop")) {
+				input = reader.readLine().split(" ");
+
+				// vigenere
+				// todo : entrée en .txt
+				if (input[0].equalsIgnoreCase("vigenere")) {
+					// decrypt
+					if (input[1].equalsIgnoreCase("decrypt")) {
+						if (input[3] != null && input[3].length() > 1) {
+							byte[] result = Encrypt.vigenere(Helper.stringToBytes(input[2]), Helper.stringToBytes(input[3]), false);
+							String output = bytesToString(result);
+							System.out.println(output);
+						} else {
+							System.out.println("you have to enter a key larger than 1 character.");
+						}
+					}
+
+				// stop
+				} else if(input[0].equalsIgnoreCase("stop")) {
 					System.out.println("Exiting program...");
 					break;
+
 				} else {
-					System.out.println(input + " isn't a command.");
+					System.out.println(input[0] + " isn't a command.");
 				}
 			}
 
@@ -69,6 +83,7 @@ public class Main {
 	public static void testCaesar(byte[] string , byte key) {
 		//Encoding
 		byte[] result = Encrypt.caesar(string, key);
+		System.out.println("ceaser: " + result);
 		String s = bytesToString(result);
 		System.out.println("Encoded : " + s);
 		

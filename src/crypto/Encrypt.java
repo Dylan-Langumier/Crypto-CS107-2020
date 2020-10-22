@@ -101,8 +101,19 @@ public class Encrypt {
 	 * @return an encoded byte array 
 	 */
 	public static byte[] vigenere(byte[] plainText, byte[] keyword, boolean spaceEncoding) {
-		// TODO: COMPLETE THIS METHOD		
-		return null; // TODO: to be modified
+		assert(plainText != null);
+
+		byte[] cypher = new byte[plainText.length];
+		int key = 1;
+
+		for (int i = 0; i < plainText.length; i++) {
+			if (!spaceEncoding && plainText[i] == (byte) 32) {
+				cypher[i] = (byte) 32;
+			} else {
+				cypher[i] =  (byte) (((plainText[i] - 96 + keyword[i%keyword.length] - 97) % 26) + 96) ;
+			}
+		}
+		return cypher;
 	}
 	
 	/**
