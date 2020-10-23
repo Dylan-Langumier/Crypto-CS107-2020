@@ -1,7 +1,6 @@
 package crypto;
 
 import java.util.Random;
-import static crypto.Helper.*;
 
 public class Encrypt {
 	
