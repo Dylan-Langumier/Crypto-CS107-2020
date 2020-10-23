@@ -64,6 +64,7 @@ public class Main {
 						}
 					}
 				// XOR
+				/*
 				if(input[0].equalsIgnoreCase("xor")) {
 					// decrypt
 					if(input[1].equalsIgnoreCase("encrypt")) {
@@ -72,6 +73,8 @@ public class Main {
 						}
 					}
 				}
+				*/
+					
 				// stop
 				} else if(input[0].equalsIgnoreCase("stop")) {
 					System.out.println("Exiting program...");
@@ -82,7 +85,7 @@ public class Main {
 				}
 			}
 
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
