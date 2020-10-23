@@ -3,6 +3,7 @@ package crypto;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
 import java.util.Arrays;
 
 import static crypto.Helper.cleanString;
@@ -43,6 +44,7 @@ public class Main {
     
     // SHELL
 		BufferedReader reader = new BufferedReader(new InputStreamReader((System.in)));
+
 		String[] input;
 		try {
 			System.out.println("yo it's the crypto");
