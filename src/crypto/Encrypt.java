@@ -26,9 +26,28 @@ public class Encrypt {
 	 * if the method is called with an unknown type of algorithm, it returns the original message
 	 */
 	public static String encrypt(String message, String key, int type) {
+		byte[] bytesMessage = Helper.stringToBytes(message);
+		byte[] bytesKey = Helper.stringToBytes(key);
+		String result = message;
+		switch(type) {
+			case 0:
+				result = Helper.bytesToString(caesar(bytesMessage, bytesKey[0]));
+				break;
+			case 1:
+				result = Helper.bytesToString(vigenere(bytesMessage, bytesKey));
+				break;
+			case 2:
+				result = Helper.bytesToString(xor(bytesMessage, bytesKey[0]));
+				break;
+			case 3:
+				result = Helper.bytesToString(oneTimePad(bytesMessage, bytesKey));
+				break;
+			case 4:
+				result = Helper.bytesToString(cbc(bytesMessage, bytesKey));
+				break;
+		}
+		return result;
 		// TODO: COMPLETE THIS METHOD
-		
-		return null; // TODO: to be modified
 	}
 	
 	
