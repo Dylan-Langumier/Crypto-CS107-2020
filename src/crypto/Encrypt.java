@@ -46,12 +46,12 @@ public class Encrypt {
 	public static byte[] caesar(byte[] plainText, byte key, boolean spaceEncoding) {
 		assert(plainText != null);
 
-		byte[] cypherByte = new byte[plainText.length];
+		byte[] cipherByte = new byte[plainText.length];
 		for (int i = 0 ; i < plainText.length; i++) {
-			if(!spaceEncoding && plainText[i] == (byte) 32) cypherByte[i] = (byte) 32;
-			else cypherByte[i] = (byte) (plainText[i] + key);
+			if(!spaceEncoding && plainText[i] == (byte) 32) cipherByte[i] = (byte) 32;
+			else cipherByte[i] = (byte) (plainText[i] + key);
 		}
-		return cypherByte;
+		return cipherByte;
 	}
 	
 	/**
