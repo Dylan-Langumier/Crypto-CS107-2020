@@ -35,11 +35,12 @@ public class Decrypt {
 	 * @param bruteForceResult a 2D byte array containing the result of a brute force method
 	 */
 	public static String arrayToString(byte[][] bruteForceResult) {
-		StringBuilder decypherText = new StringBuilder();
+		StringBuilder decipherText = new StringBuilder();
 		for(int i = 0; i < bruteForceResult.length; i++) {
-			decypherText.append(Helper.bytesToString(bruteForceResult[i])).append("\n");
+			decipherText.append(Helper.bytesToString(bruteForceResult[i])).append("\n");
 		}
-		return decypherText.toString(); 		
+		return decipherText.toString();
+
 
 	}
 	

@@ -1,7 +1,6 @@
 package crypto;
 
 import java.util.Random;
-import static crypto.Helper.*;
 
 public class Encrypt {
 	
@@ -27,9 +26,28 @@ public class Encrypt {
 	 * if the method is called with an unknown type of algorithm, it returns the original message
 	 */
 	public static String encrypt(String message, String key, int type) {
+		byte[] bytesMessage = Helper.stringToBytes(message);
+		byte[] bytesKey = Helper.stringToBytes(key);
+		String result = message;
+		switch(type) {
+			case 0:
+				result = Helper.bytesToString(caesar(bytesMessage, bytesKey[0]));
+				break;
+			case 1:
+				result = Helper.bytesToString(vigenere(bytesMessage, bytesKey));
+				break;
+			case 2:
+				result = Helper.bytesToString(xor(bytesMessage, bytesKey[0]));
+				break;
+			case 3:
+				result = Helper.bytesToString(oneTimePad(bytesMessage, bytesKey));
+				break;
+			case 4:
+				result = Helper.bytesToString(cbc(bytesMessage, bytesKey));
+				break;
+		}
+		return result;
 		// TODO: COMPLETE THIS METHOD
-		
-		return null; // TODO: to be modified
 	}
 	
 	
@@ -45,13 +63,12 @@ public class Encrypt {
 	 */
 	public static byte[] caesar(byte[] plainText, byte key, boolean spaceEncoding) {
 		assert(plainText != null);
-
-		byte[] cypherByte = new byte[plainText.length];
+		byte[] cipherByte = new byte[plainText.length];
 		for (int i = 0 ; i < plainText.length; i++) {
-			if(!spaceEncoding && plainText[i] == (byte) 32) cypherByte[i] = (byte) 32;
-			else cypherByte[i] = (byte) (plainText[i] + key);
+			if(!spaceEncoding && plainText[i] == (byte) 32) cipherByte[i] = (byte) 32;
+			else cipherByte[i] = (byte) (plainText[i] + key);
 		}
-		return cypherByte;
+		return cipherByte;
 	}
 	
 	/**
@@ -76,8 +93,14 @@ public class Encrypt {
 	 * @return an encoded byte array
 	 */
 	public static byte[] xor(byte[] plainText, byte key, boolean spaceEncoding) {
-		// TODO: COMPLETE THIS METHOD
-		return null; // TODO: to be modified
+		assert(plainText != null);
+
+		byte[] cipherByte = new byte[plainText.length];
+		for (int i = 0 ; i < plainText.length; i++) {
+			if(!spaceEncoding && plainText[i] == (byte) 32) cipherByte[i] = (byte) 32;
+			else cipherByte[i] = (byte) (plainText[i] ^ key);
+		}
+		return cipherByte;
 	}
 	/**
 	 * Method to encode a byte array using a XOR with a single byte long key
@@ -101,8 +124,19 @@ public class Encrypt {
 	 * @return an encoded byte array 
 	 */
 	public static byte[] vigenere(byte[] plainText, byte[] keyword, boolean spaceEncoding) {
-		// TODO: COMPLETE THIS METHOD		
-		return null; // TODO: to be modified
+		assert(plainText != null);
+
+		byte[] cipherByte = new byte[plainText.length];
+		int spaceAmount = 0;
+		for (int i = 0; i < plainText.length; i++) {
+			if (!spaceEncoding && plainText[i] == (byte) 32) {
+				cipherByte[i] = (byte) 32;
+				spaceAmount += 1;
+			} else {
+				cipherByte[i] =  (byte) (plainText[i] + keyword[(i- spaceAmount)%keyword.length]);
+			}
+		}
+		return cipherByte;
 	}
 	
 	/**
