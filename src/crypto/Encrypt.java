@@ -94,8 +94,14 @@ public class Encrypt {
 	 * @return an encoded byte array
 	 */
 	public static byte[] xor(byte[] plainText, byte key, boolean spaceEncoding) {
-		// TODO: COMPLETE THIS METHOD
-		return null; // TODO: to be modified
+		assert(plainText != null);
+
+		byte[] cipherByte = new byte[plainText.length];
+		for (int i = 0 ; i < plainText.length; i++) {
+			if(!spaceEncoding && plainText[i] == (byte) 32) cipherByte[i] = (byte) 32;
+			else cipherByte[i] = (byte) (plainText[i] ^ key);
+		}
+		return cipherByte;
 	}
 	/**
 	 * Method to encode a byte array using a XOR with a single byte long key
@@ -121,17 +127,17 @@ public class Encrypt {
 	public static byte[] vigenere(byte[] plainText, byte[] keyword, boolean spaceEncoding) {
 		assert(plainText != null);
 
-		byte[] cypher = new byte[plainText.length];
-		int key = 1;
-
+		byte[] cipherByte = new byte[plainText.length];
+		int spaceAmount = 0;
 		for (int i = 0; i < plainText.length; i++) {
 			if (!spaceEncoding && plainText[i] == (byte) 32) {
-				cypher[i] = (byte) 32;
+				cipherByte[i] = (byte) 32;
+				spaceAmount += 1;
 			} else {
-				cypher[i] =  (byte) (((plainText[i] - 96 + keyword[i%keyword.length] - 97) % 26) + 96) ;
+				cipherByte[i] =  (byte) (plainText[i] + keyword[(i- spaceAmount)%keyword.length]);
 			}
 		}
-		return cypher;
+		return cipherByte;
 	}
 	
 	/**
