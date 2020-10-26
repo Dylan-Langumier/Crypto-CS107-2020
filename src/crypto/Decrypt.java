@@ -123,7 +123,9 @@ public class Decrypt {
 	 * @return the byte encoding of the clear text
 	 */
 	public static byte[] vigenereWithFrequencies(byte[] cipher) {
-		//TODO : COMPLETE THIS METHOD
+		System.out.println(removeSpaces(cipher));
+		int debug = vigenereFindKeyLength(removeSpaces(cipher));
+		System.out.println("lenght: " + debug);
 		return null; //TODO: to be modified
 	}
 	
@@ -135,8 +137,13 @@ public class Decrypt {
 	 * @return a List of bytes without spaces
 	 */
 	public static List<Byte> removeSpaces(byte[] array){
-		//TODO : COMPLETE THIS METHOD
-		return null;
+		List<Byte> cipher = new ArrayList<Byte>();
+		for (int i = 0; i < array.length; i++) {
+			if (array[i] != (byte) 32) {
+				cipher.add(array[i]);
+			}
+		}
+		return cipher;
 	}
 	
 	
@@ -146,7 +153,21 @@ public class Decrypt {
 	 * @return the length of the key
 	 */
 	public static int vigenereFindKeyLength(List<Byte> cipher) {
-		//TODO : COMPLETE THIS METHOD
+		int[] coincidences = new int[cipher.size()];
+
+		for (int i = 0; i < cipher.size(); i++) {
+			coincidences[i] = 0;
+		}
+		for (int i = 0; i < cipher.size(); i++) {
+			for (int index = 0; index < i; index++) {
+				if (cipher.get(i) == cipher.get(index)) {
+					coincidences[i - index - 1]++;
+				}
+			}
+		}
+
+
+
 		return -1; //TODO: to be modified
 	}
 

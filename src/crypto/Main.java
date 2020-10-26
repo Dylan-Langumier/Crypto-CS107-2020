@@ -55,8 +55,8 @@ public class Main {
 				// vigenere
 				// todo : .txt entry & inverse key and string + trim array to remove elements 0, 1 and 2
 				if (input[0].equalsIgnoreCase("vigenere")) {
-					// decrypt
-					if (input[1].equalsIgnoreCase("decrypt")) {
+					// encrypt
+					if (input[1].equalsIgnoreCase("encrypt")) {
 						if (input[3] != null && input[3].length() > 1) {
 							byte[] result = Encrypt.vigenere(Helper.stringToBytes(input[2]), Helper.stringToBytes(input[3]), false);
 							String output = bytesToString(result);
@@ -64,6 +64,9 @@ public class Main {
 						} else {
 							System.out.println("you have to enter a key larger than 1 character.");
 						}
+					} else if (input[1].equalsIgnoreCase("d")) {
+						//System.out.println((Decrypt.removeSpaces(Helper.stringToBytes("attack at dawn"))));
+						System.out.println(Decrypt.vigenereWithFrequencies(Helper.stringToBytes("vvhqwvvrmhusgjg")));
 					}
 				// XOR
 				/*
