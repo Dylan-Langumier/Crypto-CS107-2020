@@ -70,9 +70,9 @@ public class Decrypt {
 	 * @return the encoding key
 	 */
 	public static byte caesarWithFrequencies(byte[] cipherText) {
-		//TODO : COMPLETE THIS METHOD
-
-		return -1; //TODO: to be modified
+		float[] frequencies = computeFrequencies(cipherText);
+		byte key = caesarFindKey(frequencies);
+		return key;
 	}
 	
 	/**
@@ -81,8 +81,21 @@ public class Decrypt {
 	 * @return the character frequencies as an array of float
 	 */
 	public static float[] computeFrequencies(byte[] cipherText) {
-		//TODO : COMPLETE THIS METHOD
-		return null; //TODO: to be modified
+
+		float[] frequencies = new float[256];
+		// count each character
+		for (int i = 0; i < cipherText.length; i++) {
+			int value = (byte) cipherText[i];
+			frequencies[value+128]++;
+		}
+
+		// get frequencies
+		for (int i = 0; i < 256; i++) {
+			if (frequencies[i] != 0) {
+				frequencies[i] /= cipherText.length;
+			}
+		}
+		return frequencies;
 	}
 	
 	
@@ -92,8 +105,30 @@ public class Decrypt {
 	 * @return the key
 	 */
 	public static byte caesarFindKey(float[] charFrequencies) {
-		//TODO : COMPLETE THIS METHOD
-		return -1; //TODO: to be modified
+
+		// frequencies analysis
+		float[] iterations = new float[256];
+		for (int i = 0; i < 26; i++) {
+			for (int j = 0; j < 256; j++) {
+				int index = i + j;
+				if (index > 255) {
+					index = index - 256;
+				}
+				iterations[j] += ENGLISHFREQUENCIES[i] * charFrequencies[index];
+			}
+		}
+
+		// find highest value
+		int highestIndex = 0;
+		float highest = 0;
+		for (int i = 0; i < 256; i++) {
+			if (iterations[i] > highest) {
+				highest = iterations[i];
+				highestIndex = i;
+			}
+		}
+
+		return (byte) (highestIndex - 97 - 128);
 	}
 	
 	
@@ -123,10 +158,11 @@ public class Decrypt {
 	 * @return the byte encoding of the clear text
 	 */
 	public static byte[] vigenereWithFrequencies(byte[] cipher) {
-		System.out.println(removeSpaces(cipher));
-		int debug = vigenereFindKeyLength(removeSpaces(cipher));
-		System.out.println("lenght: " + debug);
-		return null; //TODO: to be modified
+		int keyLength = vigenereFindKeyLength(removeSpaces(cipher));
+		byte[] key = vigenereFindKey(removeSpaces(cipher), keyLength);
+		byte[] decryptedCipher = Encrypt.vigenere(cipher, key);
+
+		return decryptedCipher;
 	}
 	
 	
@@ -154,6 +190,7 @@ public class Decrypt {
 	 */
 	public static int vigenereFindKeyLength(List<Byte> cipher) {
 
+		// TODO: negative bytes ? i think
 		// find coincidences
 		int[] coincidences = new int[cipher.size()];
 		for (int i = 0; i < cipher.size(); i++) {
@@ -167,10 +204,8 @@ public class Decrypt {
 			}
 		}
 
-
-
 		// find local maximums
-		// todo: ceil only for tables with odd size
+		// todo: ceil only for tables with odd size I think
 		List<Integer> maximumsIndex = new ArrayList<Integer>();
 		for (int i = 0; i < Math.ceil(coincidences.length / 2); i++) {
 			if (i == 0) {
@@ -183,14 +218,8 @@ public class Decrypt {
 				}
 			} else if (coincidences[i] >= coincidences[i + 1] && coincidences[i] >= coincidences[i + 2] && coincidences[i] >= coincidences[i - 1] && coincidences[i] >= coincidences[i - 2]) {
 				maximumsIndex.add(i);
-				//System.out.println(coincidences[i - 2] + " " + coincidences[i - 1] + " " + coincidences[i] + " " + coincidences[i + 1] + " " + coincidences[i + 2]);
 			}
 		}
-
-		for (int i = 0; i < Math.ceil(coincidences.length/2); i++) {
-			System.out.println("coincidences: " + coincidences[i]);
-		}
-
 
 		// TODO: cleanup this mess done at 1am lmao
 		if (maximumsIndex.size() > 1) {
@@ -212,15 +241,6 @@ public class Decrypt {
 				}
 			}
 
-			for (int i = 0; i < maximumsIndex.size(); i++) {
-				System.out.println("maximums at" + "(" + maximumsIndex.get(i) + ")" + coincidences[maximumsIndex.get(i)]);
-			}
-
-			// debug DELETE
-			distance.entrySet().forEach(entry->{
-				System.out.println("distance: " + entry.getKey() + " - iterations: " + entry.getValue());
-			});
-
 			// get key length
 			return Helper.getHighest(distance);
 		} else {
@@ -239,8 +259,20 @@ public class Decrypt {
 	 * @return the inverse key to decode the Vigenere cipher text
 	 */
 	public static byte[] vigenereFindKey(List<Byte> cipher, int keyLength) {
-		//TODO : COMPLETE THIS METHOD
-		return null; //TODO: to be modified
+
+		// TODO: optimiser because the code pue la merde and is not beau but well I didn't had le temps de finir
+		byte[][] caesarKey = new byte[keyLength][cipher.size()/keyLength];
+		for (int i = 0; i < keyLength; i++) {
+			for (int j = 0; j < (cipher.size()/keyLength); j++) {
+				caesarKey[i][j] = cipher.get((keyLength * j) + i);
+			}
+		}
+
+		byte[] keys = new byte[keyLength];
+		for (int i = 0; i < keyLength; i++) {
+			keys[i] = (byte) -(caesarWithFrequencies(caesarKey[i]));
+		}
+		return keys;
 	}
 	
 	

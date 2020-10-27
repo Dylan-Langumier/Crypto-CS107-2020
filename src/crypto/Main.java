@@ -6,9 +6,7 @@ import java.io.InputStreamReader;
 
 import java.util.Arrays;
 
-import static crypto.Helper.cleanString;
-import static crypto.Helper.stringToBytes;
-import static crypto.Helper.bytesToString;
+import static crypto.Helper.*;
 
 /*
  * Part 1: Encode (with note that one can reuse the functions to decode)
@@ -52,7 +50,7 @@ public class Main {
 			while (!input[0].equalsIgnoreCase("stop")) {
 				input = reader.readLine().split(" ");
 
-				// vigenere
+				// vigenere cipher
 				// todo : .txt entry & inverse key and string + trim array to remove elements 0, 1 and 2
 				if (input[0].equalsIgnoreCase("vigenere")) {
 					// encrypt
@@ -65,13 +63,8 @@ public class Main {
 							System.out.println("you have to enter a key larger than 1 character.");
 						}
 					} else if (input[1].equalsIgnoreCase("d")) {
-						//System.out.println((Decrypt.removeSpaces(Helper.stringToBytes("attack at dawn"))));
-						//System.out.println(Decrypt.vigenereWithFrequencies(Helper.stringToBytes("vvhqwvvrmhusgjg"))); // kl: 4
-						//System.out.println(Decrypt.vigenereWithFrequencies(Helper.stringToBytes("AFSXFSUWM"))); // kl: 3
-						//System.out.println(Decrypt.vigenereWithFrequencies(Helper.stringToBytes("JifrawltctpxbrcqzvqdufzuyfvzokxMhhujavshhifllguhedmBpayvsmthuqxcqzezgefeusanj"))); // kl: 6
-						//System.out.println(Decrypt.vigenereWithFrequencies(Helper.stringToBytes("JifrpbnwviepziumhzxeemkfvblmokxMwmwmtkhzfzxhtkbiokxMmwoismthjvzfjotrevxacwhot"))); // kl: 4
-						//System.out.println(Decrypt.vigenereWithFrequencies(Helper.stringToBytes("Rk ya byup liy na zsq ga lod ijge bj bufp lye ga tk oeb aqpp aac"))); // kl: 8 (key: supercode)
-						System.out.println(Decrypt.vigenereWithFrequencies(Helper.stringToBytes("jm ivuo uv uugziidu pa lmfgx at isugaltunqjt ru tges md udwiv tf fasbus fnea jbdz uv qmskrqjiya dm tjzcum"))); // kl: 6 (key: aSKZoe)
+						String txt = Helper.readStringFromFile("challenge-encrypted.txt");
+						System.out.println(Helper.bytesToString((Decrypt.vigenereWithFrequencies(Helper.stringToBytes(txt))))); // kl: 4 "bite" mdr juge pas la clé
 
 					}
 				// XOR
@@ -91,6 +84,17 @@ public class Main {
 					System.out.println("Exiting program...");
 					break;
 
+				// caesar cipher
+				} else if (input[0].equalsIgnoreCase("caesar")) {
+					// decrypt
+					if (input[1].equalsIgnoreCase("d") || input[1].equalsIgnoreCase("decrypt")) {
+
+					// encrypt
+					} else if (input[1].equalsIgnoreCase("e") || input[1].equalsIgnoreCase("encrypt")) {
+
+					}
+
+				// command doesn't exist
 				} else {
 					System.out.println(input[0] + " isn't a command.");
 				}
@@ -120,11 +124,12 @@ public class Main {
 		byte[][] bruteForceResult = Decrypt.caesarBruteForce(result);
 		String sDA = Decrypt.arrayToString(bruteForceResult);
 		Helper.writeStringToFile(sDA, "bruteForceCaesar.txt");
-		
+
 		byte decodingKey = Decrypt.caesarWithFrequencies(result);
-		String sFD = bytesToString(Encrypt.caesar(result, decodingKey));
-		System.out.println("\n(absurd result due to a function not done yet)\nDecoded without knowing the key : " + sFD);
+		String sFD = bytesToString(Encrypt.caesar(result, (byte) (-decodingKey)));
+		System.out.println("Decoded without knowing the key : " + sFD);
 	}
+
 	public static void testVigenere(byte[] string, byte[] key) {
 		String plainText = "bonne journée";
 		byte[] plainBytes = Helper.stringToBytes(plainText);//98, 111, 110, 110, 101, 32, 106, 111, 117, 114, 110, -23, 101
@@ -134,6 +139,7 @@ public class Main {
 		System.out.println(cipherText);
 		// todo: various improvements
 	}
+
 	public static void testXor(byte[] string, byte[] key) {
 		byte[] plainBytes = {98, 111, 110, 110, 101, 32, 106, 111, 117, 114, 110, -23, 101};
 		byte[] cipherBytes = Encrypt.xor(plainBytes, (byte) 7, true);
