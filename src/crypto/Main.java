@@ -66,7 +66,13 @@ public class Main {
 						}
 					} else if (input[1].equalsIgnoreCase("d")) {
 						//System.out.println((Decrypt.removeSpaces(Helper.stringToBytes("attack at dawn"))));
-						System.out.println(Decrypt.vigenereWithFrequencies(Helper.stringToBytes("vvhqwvvrmhusgjg")));
+						//System.out.println(Decrypt.vigenereWithFrequencies(Helper.stringToBytes("vvhqwvvrmhusgjg"))); // kl: 4
+						//System.out.println(Decrypt.vigenereWithFrequencies(Helper.stringToBytes("AFSXFSUWM"))); // kl: 3
+						//System.out.println(Decrypt.vigenereWithFrequencies(Helper.stringToBytes("JifrawltctpxbrcqzvqdufzuyfvzokxMhhujavshhifllguhedmBpayvsmthuqxcqzezgefeusanj"))); // kl: 6
+						//System.out.println(Decrypt.vigenereWithFrequencies(Helper.stringToBytes("JifrpbnwviepziumhzxeemkfvblmokxMwmwmtkhzfzxhtkbiokxMmwoismthjvzfjotrevxacwhot"))); // kl: 4
+						//System.out.println(Decrypt.vigenereWithFrequencies(Helper.stringToBytes("Rk ya byup liy na zsq ga lod ijge bj bufp lye ga tk oeb aqpp aac"))); // kl: 8 (key: supercode)
+						System.out.println(Decrypt.vigenereWithFrequencies(Helper.stringToBytes("jm ivuo uv uugziidu pa lmfgx at isugaltunqjt ru tges md udwiv tf fasbus fnea jbdz uv qmskrqjiya dm tjzcum"))); // kl: 6 (key: aSKZoe)
+
 					}
 				// XOR
 				/*

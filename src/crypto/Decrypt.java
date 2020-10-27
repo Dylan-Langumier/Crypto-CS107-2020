@@ -153,8 +153,9 @@ public class Decrypt {
 	 * @return the length of the key
 	 */
 	public static int vigenereFindKeyLength(List<Byte> cipher) {
-		int[] coincidences = new int[cipher.size()];
 
+		// find coincidences
+		int[] coincidences = new int[cipher.size()];
 		for (int i = 0; i < cipher.size(); i++) {
 			coincidences[i] = 0;
 		}
@@ -168,7 +169,64 @@ public class Decrypt {
 
 
 
-		return -1; //TODO: to be modified
+		// find local maximums
+		// todo: ceil only for tables with odd size
+		List<Integer> maximumsIndex = new ArrayList<Integer>();
+		for (int i = 0; i < Math.ceil(coincidences.length / 2); i++) {
+			if (i == 0) {
+				if (coincidences[i] >= coincidences[1] && coincidences[i] >= coincidences[2]) {
+					maximumsIndex.add(i);
+				}
+			} else if (i == 1) {
+				if (coincidences[i] >= coincidences[2] && coincidences[i] >= coincidences[3] && coincidences[i] >= coincidences[0]) {
+					maximumsIndex.add(i);
+				}
+			} else if (coincidences[i] >= coincidences[i + 1] && coincidences[i] >= coincidences[i + 2] && coincidences[i] >= coincidences[i - 1] && coincidences[i] >= coincidences[i - 2]) {
+				maximumsIndex.add(i);
+				//System.out.println(coincidences[i - 2] + " " + coincidences[i - 1] + " " + coincidences[i] + " " + coincidences[i + 1] + " " + coincidences[i + 2]);
+			}
+		}
+
+		for (int i = 0; i < Math.ceil(coincidences.length/2); i++) {
+			System.out.println("coincidences: " + coincidences[i]);
+		}
+
+
+		// TODO: cleanup this mess done at 1am lmao
+		if (maximumsIndex.size() > 1) {
+			// set distances in a hashmap
+			Map<Integer, Integer> distance = new HashMap<>();
+			for (int i = 0; i < maximumsIndex.size() - 1; i++) {
+				int dist = maximumsIndex.get(i+1) - maximumsIndex.get(i);
+				if (dist == 1) {
+					maximumsIndex.remove(i);
+				}
+				if (!distance.containsKey(dist) && dist != 1) {
+					distance.put(dist, 1);
+				} else {
+					for (Map.Entry<Integer, Integer> item : distance.entrySet()) {
+						if (item.getKey() == dist) {
+							item.setValue(item.getValue() + 1);
+						}
+					}
+				}
+			}
+
+			for (int i = 0; i < maximumsIndex.size(); i++) {
+				System.out.println("maximums at" + "(" + maximumsIndex.get(i) + ")" + coincidences[maximumsIndex.get(i)]);
+			}
+
+			// debug DELETE
+			distance.entrySet().forEach(entry->{
+				System.out.println("distance: " + entry.getKey() + " - iterations: " + entry.getValue());
+			});
+
+			// get key length
+			return Helper.getHighest(distance);
+		} else {
+			// return distance to the origin when there is only one maximums
+			return maximumsIndex.get(0)+1;
+		}
 	}
 
 	

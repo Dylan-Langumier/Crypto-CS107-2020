@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Helper {
 	private static final String SEP = File.separator;
@@ -112,6 +114,21 @@ public class Helper {
 		  return string;
 		  
 	}
-	
-	
+
+	/**
+	 * Method to find the highest value of a hashmap
+	 */
+	public static int getHighest (Map<Integer, Integer> hashmap) {
+		int highest = 0;
+		int key = 0;
+		for (Map.Entry<Integer, Integer> item : hashmap.entrySet()) {
+			if (item.getValue() > highest) {
+				highest = item.getValue();
+				key = item.getKey();
+			}
+		}
+		return key;
+	}
+
+
 }
