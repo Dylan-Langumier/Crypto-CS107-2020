@@ -193,12 +193,10 @@ public class Encrypt {
 	 * @return random bytes in an array
 	 */
 	public static byte[] generatePad(int size) {
-		// TODO: COMPLETE THIS METHOD
-
-		return null; // TODO: to be modified
-
+		byte[] pad = new byte[size];
+		for(int i = 0; i < size; i++) {
+			pad[i] = (byte) rand.nextInt(256);
+		}
+		return pad;
 	}
-	
-	
-	
 }
