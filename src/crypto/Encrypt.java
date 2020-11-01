@@ -62,12 +62,12 @@ public class Encrypt {
 	 */
 	public static byte[] caesar(byte[] plainText, byte key, boolean spaceEncoding) {
 		assert(plainText != null);
-		byte[] cipherByte = new byte[plainText.length];
+		byte[] cipherBytes = new byte[plainText.length];
 		for (int i = 0 ; i < plainText.length; i++) {
-			if(!spaceEncoding && plainText[i] == (byte) 32) cipherByte[i] = (byte) 32;
-			else cipherByte[i] = (byte) (plainText[i] + key);
+			if(!spaceEncoding && plainText[i] == SPACE) cipherBytes[i] = SPACE;
+			else cipherBytes[i] = (byte) (plainText[i] + key);
 		}
-		return cipherByte;
+		return cipherBytes;
 	}
 	
 	/**
@@ -93,13 +93,12 @@ public class Encrypt {
 	 */
 	public static byte[] xor(byte[] plainText, byte key, boolean spaceEncoding) {
 		assert(plainText != null);
-
-		byte[] cipherByte = new byte[plainText.length];
+		byte[] cipherBytes = new byte[plainText.length];
 		for (int i = 0 ; i < plainText.length; i++) {
-			if(!spaceEncoding && plainText[i] == (byte) 32) cipherByte[i] = (byte) 32;
-			else cipherByte[i] = (byte) (plainText[i] ^ key);
+			if(!spaceEncoding && plainText[i] == SPACE) cipherBytes[i] = SPACE;
+			else cipherBytes[i] = (byte) (plainText[i] ^ key);
 		}
-		return cipherByte;
+		return cipherBytes;
 	}
 	/**
 	 * Method to encode a byte array using a XOR with a single byte long key
@@ -108,7 +107,6 @@ public class Encrypt {
 	 * @return an encoded byte array
 	 */
 	public static byte[] xor(byte[] plainText, byte key) {
-
 		return xor(plainText, key, false);
 	}
 	//-----------------------Vigenere-------------------------
@@ -124,18 +122,17 @@ public class Encrypt {
 	 */
 	public static byte[] vigenere(byte[] plainText, byte[] keyword, boolean spaceEncoding) {
 		assert(plainText != null);
-
-		byte[] cipherByte = new byte[plainText.length];
+		byte[] cipherBytes = new byte[plainText.length];
 		int spaceAmount = 0;
 		for (int i = 0; i < plainText.length; i++) {
-			if (!spaceEncoding && plainText[i] == (byte) 32) {
-				cipherByte[i] = (byte) 32;
+			if (!spaceEncoding && plainText[i] == SPACE) {
+				cipherBytes[i] = SPACE;
 				spaceAmount += 1;
 			} else {
-				cipherByte[i] =  (byte) (plainText[i] + keyword[(i- spaceAmount)%keyword.length]);
+				cipherBytes[i] =  (byte) (plainText[i] + keyword[(i- spaceAmount)%keyword.length]);
 			}
 		}
-		return cipherByte;
+		return cipherBytes;
 	}
 	
 	/**
