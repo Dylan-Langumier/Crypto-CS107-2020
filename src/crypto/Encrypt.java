@@ -30,24 +30,23 @@ public class Encrypt {
 		byte[] bytesKey = Helper.stringToBytes(key);
 		String result = message;
 		switch(type) {
-			case 0:
+			case CAESAR: // 0
 				result = Helper.bytesToString(caesar(bytesMessage, bytesKey[0]));
 				break;
-			case 1:
+			case VIGENERE: // 1
 				result = Helper.bytesToString(vigenere(bytesMessage, bytesKey));
 				break;
-			case 2:
+			case XOR: // 2
 				result = Helper.bytesToString(xor(bytesMessage, bytesKey[0]));
 				break;
-			case 3:
+			case ONETIME: // 3
 				result = Helper.bytesToString(oneTimePad(bytesMessage, bytesKey));
 				break;
-			case 4:
+			case CBC: // 4
 				result = Helper.bytesToString(cbc(bytesMessage, bytesKey));
 				break;
 		}
 		return result;
-		// TODO: COMPLETE THIS METHOD
 	}
 	
 	
