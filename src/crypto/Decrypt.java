@@ -85,7 +85,7 @@ public class Decrypt {
 		float[] frequencies = new float[256];
 		// count each character
 		for (int i = 0; i < cipherText.length; i++) {
-			int value = (byte) cipherText[i];
+			int value = cipherText[i];
 			frequencies[value+128]++;
 		}
 
@@ -207,7 +207,7 @@ public class Decrypt {
 		// find local maximums
 		// todo: ceil only for tables with odd size I think
 		List<Integer> maximumsIndex = new ArrayList<Integer>();
-		for (int i = 0; i < Math.ceil(coincidences.length / 2); i++) {
+		for (int i = 0; i < Math.ceil(coincidences.length / 2.0); i++) {
 			if (i == 0) {
 				if (coincidences[i] >= coincidences[1] && coincidences[i] >= coincidences[2]) {
 					maximumsIndex.add(i);
