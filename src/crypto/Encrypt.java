@@ -164,8 +164,12 @@ public class Encrypt {
 	 * @return an encoded byte array
 	 */
 	public static byte[] oneTimePad(byte[] plainText, byte[] pad) {
-		// TODO: COMPLETE THIS METHOD
-		return null; // TODO: to be modified
+		assert(plainText != null && plainText.length == pad.length);
+		byte[] cipherBytes = new byte[plainText.length];
+		for(int i = 0; i < plainText.length; i++) {
+			cipherBytes[i] = (byte) (plainText[i]^pad[i]);
+		}
+		return cipherBytes;
 	}
 	
 	
