@@ -54,7 +54,6 @@ public class Decrypt {
 	 * @return a 2D byte array containing all the possibilities
 	 */
 	public static byte[][] caesarBruteForce(byte[] cipher) {
-
 		assert(cipher != null);
 		byte[][] results = new byte[256][cipher.length];
 		for(int i = 0; i < 256; i++) {
@@ -142,11 +141,13 @@ public class Decrypt {
 	 * @return the array of possibilities for the clear text
 	 */
 	public static byte[][] xorBruteForce(byte[] cipher) {
-		//TODO : COMPLETE THIS METHOD
-
-		return null; //TODO: to be modified
+		assert(cipher != null);
+		byte[][] results = new byte[256][cipher.length];
+		for(int i = 0; i < 256; i++) {
+			results[i] = Encrypt.xor(cipher, (byte) i);
+		}
+		return results;
 	}
-	
 	
 	
 	//-----------------------Vigenere-------------------------
@@ -173,7 +174,7 @@ public class Decrypt {
 	 * @return a List of bytes without spaces
 	 */
 	public static List<Byte> removeSpaces(byte[] array){
-		List<Byte> cipher = new ArrayList<Byte>();
+		List<Byte> cipher = new ArrayList<>();
 		for (int i = 0; i < array.length; i++) {
 			if (array[i] != (byte) 32) {
 				cipher.add(array[i]);
@@ -189,8 +190,6 @@ public class Decrypt {
 	 * @return the length of the key
 	 */
 	public static int vigenereFindKeyLength(List<Byte> cipher) {
-
-		// TODO: negative bytes ? i think
 		// find coincidences
 		int[] coincidences = new int[cipher.size()];
 		for (int i = 0; i < cipher.size(); i++) {
@@ -198,7 +197,7 @@ public class Decrypt {
 		}
 		for (int i = 0; i < cipher.size(); i++) {
 			for (int index = 0; index < i; index++) {
-				if (cipher.get(i) == cipher.get(index)) {
+				if (cipher.get(i).equals(cipher.get(index))) {
 					coincidences[i - index - 1]++;
 				}
 			}
@@ -259,8 +258,6 @@ public class Decrypt {
 	 * @return the inverse key to decode the Vigenere cipher text
 	 */
 	public static byte[] vigenereFindKey(List<Byte> cipher, int keyLength) {
-
-		// TODO: optimiser because the code pue la merde and is not beau but well I didn't had le temps de finir
 		byte[][] caesarKey = new byte[keyLength][cipher.size()/keyLength];
 		for (int i = 0; i < keyLength; i++) {
 			for (int j = 0; j < (cipher.size()/keyLength); j++) {
@@ -285,16 +282,22 @@ public class Decrypt {
 	 * @return the clear text
 	 */
 	public static byte[] decryptCBC(byte[] cipher, byte[] iv) {
-		//TODO : COMPLETE THIS METHOD	
+		int iterations = cipher.length/iv.length;
+		if (cipher.length % iv.length != 0) iterations++;
+
+		ArrayList<Byte> plainList = new ArrayList<>();
+		byte[][] blocks = new byte[iterations][iv.length];
+		byte[][] plainBlocks = new byte[iterations][iv.length];
+		byte[] plainBytes = new byte[cipher.length];
+		for(int i = 0; i< iterations; i++) {
+			blocks[i] = Main.trim(cipher, (i+1)*iv.length, true);
+			blocks[i] = Main.trim(blocks[i], i*iv.length);
+			if (i != 0) {
+				plainBlocks[i] = Encrypt.oneTimePad(blocks[i], plainBlocks[i-1]);
+			} else {
+				plainBlocks[i] = Encrypt.oneTimePad(blocks[i], iv);
+			}
+		}
 		return null; //TODO: to be modified
 	}
-	
-	
-	
-
-		
-		
-		
-		
-		
 }

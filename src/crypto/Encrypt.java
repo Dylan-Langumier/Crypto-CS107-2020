@@ -1,6 +1,8 @@
 package crypto;
 
+import java.util.ArrayList;
 import java.util.Random;
+
 
 public class Encrypt {
 	
@@ -115,8 +117,8 @@ public class Encrypt {
 	 * Method to encode a byte array using a byte array keyword
 	 * The keyword is repeated along the message to encode
 	 * The bytes of the keyword are added to those of the message to encode
-	 * @param plainText the byte array representing the message to encode
-	 * @param keyword the byte array representing the key used to perform the shift
+	 * @param plainText     the byte array representing the message to encode
+	 * @param keyword       the byte array representing the key used to perform the shift
 	 * @param spaceEncoding if false, then spaces are not encoded
 	 * @return an encoded byte array 
 	 */
@@ -181,12 +183,35 @@ public class Encrypt {
 	 * @return an encoded byte array
 	 */
 	public static byte[] cbc(byte[] plainText, byte[] iv) {
-		// TODO: COMPLETE THIS METHOD
-		
-		return null; // TODO: to be modified
+		int iterations = plainText.length/iv.length;
+		if (plainText.length % iv.length != 0) iterations++;
+
+		ArrayList<Byte> cipherList = new ArrayList<>();
+		byte[][] blocks = new byte[iterations][iv.length];
+		byte[][] cipherBlocks = new byte[iterations][iv.length];
+		byte[] cipherBytes = new byte[plainText.length];
+
+		for(int i = 0; i< iterations; i++) {
+			blocks[i] = Main.trim(plainText, (i+1)*iv.length, true);
+			blocks[i] = Main.trim(blocks[i], i*iv.length);
+			if (i != 0) {
+				cipherBlocks[i] = oneTimePad(blocks[i], cipherBlocks[i-1]);
+			} else {
+				cipherBlocks[i] = oneTimePad(blocks[i], iv);
+			}
+		}
+
+		for (int i = 0; i < iterations; i++) {
+			for (int j = 0; j < iv.length; j++) {
+				cipherList.add(cipherBlocks[i][j]);
+			}
+		}
+
+		for(int i=0; i < plainText.length; i++) {
+			cipherBytes[i] = cipherList.get(i);
+		}
+		return cipherBytes;
 	}
-	
-	
 	/**
 	 * Generate a random pad/IV of bytes to be used for encoding
 	 * @param size the size of the pad

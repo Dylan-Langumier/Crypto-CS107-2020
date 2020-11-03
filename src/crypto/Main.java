@@ -1,8 +1,6 @@
 package crypto;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import java.util.Arrays;
 
@@ -18,8 +16,12 @@ public class Main {
 	
 	
 	//---------------------------MAIN---------------------------
-	public static void main(String[] args) {
-		
+	public static void main(String[] args) throws IOException {
+		byte[] plainBytes= {98, 111, 110, 110, 101, 32};
+		byte[] pad= { 1,   2,   3};
+		byte[] cipherBytes= Encrypt.cbc(plainBytes, pad);
+		System.out.println(Arrays.toString(cipherBytes));
+/*
 		
 		String inputMessage = Helper.readStringFromFile("text_one.txt");
 		String key = "2cF%5";
@@ -42,73 +44,26 @@ public class Main {
     
     // SHELL
 		BufferedReader reader = new BufferedReader(new InputStreamReader((System.in)));
-
 		String[] input;
+		boolean isFinished = false;
 		try {
-			System.out.println("yo it's the crypto");
-			input = reader.readLine().split(" ");
-			while (!input[0].equalsIgnoreCase("stop")) {
-				input = reader.readLine().split(" ");
-
-				// vigenere cipher
-				// todo : .txt entry & inverse key and string + trim array to remove elements 0, 1 and 2
-				if (input[0].equalsIgnoreCase("vigenere")) {
-					// encrypt
-					if (input[1].equalsIgnoreCase("encrypt")) {
-						if (input[3] != null && input[3].length() > 1) {
-							byte[] result = Encrypt.vigenere(Helper.stringToBytes(input[2]), Helper.stringToBytes(input[3]), false);
-							String output = bytesToString(result);
-							System.out.println(output);
-						} else {
-							System.out.println("you have to enter a key larger than 1 character.");
-						}
-					} else if (input[1].equalsIgnoreCase("d")) {
-						String txt = Helper.readStringFromFile("challenge-encrypted.txt");
-						System.out.println(Helper.bytesToString((Decrypt.vigenereWithFrequencies(Helper.stringToBytes(txt))))); // kl: 4 "bite" mdr juge pas la clé
-
-					}
-				// XOR
-				/*
-				if(input[0].equalsIgnoreCase("xor")) {
-					// decrypt
-					if(input[1].equalsIgnoreCase("encrypt")) {
-						if(input[3].length()>1) {
-
-						}
-					}
-				}
-				*/
-					
-				// stop
-				} else if(input[0].equalsIgnoreCase("stop")) {
-					System.out.println("Exiting program...");
-					break;
-
-				// caesar cipher
-				} else if (input[0].equalsIgnoreCase("caesar")) {
-					// decrypt
-					if (input[1].equalsIgnoreCase("d") || input[1].equalsIgnoreCase("decrypt")) {
-
-					// encrypt
-					} else if (input[1].equalsIgnoreCase("e") || input[1].equalsIgnoreCase("encrypt")) {
-
-					}
-
-				// command doesn't exist
+			while(!isFinished) {
+				System.out.println("Voulez vous terminer votre programme? [Oui/Non]");
+				String s = reader.readLine();
+				if (s.equals("Oui")) {
+					isFinished = true;
 				} else {
-					System.out.println(input[0] + " isn't a command.");
+					System.out.println("Le programme ne se termine pas.");
 				}
 			}
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		
-		
+*/
+
 	}
-	
-	
+
 	//Run the Encoding and Decoding using the caesar pattern 
 	public static void testCaesar(byte[] string , byte key) {
 		//Encoding
@@ -150,15 +105,24 @@ public class Main {
 		// todo: various improvements
 	}
 	/**
-	 * Method to remove the first elements of an array
+	 * Method to remove the first (last) elements of an array
 	 * @param array the array to trim
-	 * @param startingBound the amount of elements you want to remove
-	 *                      at the beginning of the array
+	 * @param bound the amount of elements you want to remove from the array at the beginning (end)
+	 * @param end   if true, the method removes the last elements of the array
 	 *
 	 * @return a trimmed array
 	 */
-	public static Object[] trim(Object[] array, int startingBound) {
-		return Arrays.copyOfRange(array, startingBound, array.length);
+	public static byte[] trim(byte[] array, int bound, boolean end) {
+		byte[] result;
+		if (!end) {
+			result = Arrays.copyOfRange(array, bound, array.length);
+		} else {
+			result = Arrays.copyOfRange(array, 0, bound);
+		}
+		return result;
+	}
+	public static byte[] trim(byte[] array, int bound) {
+		return trim(array, bound, false);
 	}
 //TODO : TO BE COMPLETED
 }
