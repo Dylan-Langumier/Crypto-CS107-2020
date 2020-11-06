@@ -36,12 +36,10 @@ public class Decrypt {
 	 */
 	public static String arrayToString(byte[][] bruteForceResult) {
 		StringBuilder decipherText = new StringBuilder();
-		for(int i = 0; i < bruteForceResult.length; i++) {
-			decipherText.append(Helper.bytesToString(bruteForceResult[i])).append("\n");
+		for (byte[] bytes : bruteForceResult) {
+			decipherText.append(Helper.bytesToString(bytes)).append("\n");
 		}
 		return decipherText.toString();
-
-
 	}
 	
 	
