@@ -187,17 +187,17 @@ public class Encrypt {
 		if (plainText.length % iv.length != 0) iterations++;
 
 		ArrayList<Byte> cipherList = new ArrayList<>();
-		byte[][] blocks = new byte[iterations][iv.length];
+		byte[][] plainBlocks = new byte[iterations][iv.length];
 		byte[][] cipherBlocks = new byte[iterations][iv.length];
 		byte[] cipherBytes = new byte[plainText.length];
 
 		for(int i = 0; i< iterations; i++) {
-			blocks[i] = Main.trim(plainText, (i+1)*iv.length, true);
-			blocks[i] = Main.trim(blocks[i], i*iv.length);
+			plainBlocks[i] = Main.trim(plainText, (i+1)*iv.length, true);
+			plainBlocks[i] = Main.trim(plainBlocks[i], i*iv.length);
 			if (i != 0) {
-				cipherBlocks[i] = oneTimePad(blocks[i], cipherBlocks[i-1]);
+				cipherBlocks[i] = oneTimePad(plainBlocks[i], cipherBlocks[i-1]);
 			} else {
-				cipherBlocks[i] = oneTimePad(blocks[i], iv);
+				cipherBlocks[i] = oneTimePad(plainBlocks[i], iv);
 			}
 		}
 
