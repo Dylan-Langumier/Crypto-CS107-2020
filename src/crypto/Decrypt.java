@@ -22,9 +22,21 @@ public class Decrypt {
 	 * @return the decoded string or the original encoded message if type is not in the list above.
 	 */
 	public static String breakCipher(String cipher, int type) {
-		//TODO : COMPLETE THIS METHOD
-		
-		return null; //TODO: to be modified
+		byte[] cipherBytes = Helper.stringToBytes(cipher);
+		String result = cipher;
+		switch (type) {
+			case Encrypt.CAESAR: // 0
+				byte decodingKey = caesarWithFrequencies(cipherBytes);
+				result = Helper.bytesToString(Encrypt.caesar(cipherBytes, (byte) (-decodingKey)));
+				break;
+			case Encrypt.VIGENERE: // 1
+				result = Helper.bytesToString(vigenereWithFrequencies(cipherBytes));
+				break;
+			case Encrypt.XOR: // 2
+				result = arrayToString(xorBruteForce(cipherBytes));
+				break;
+		}
+		return result;
 	}
 	
 	
