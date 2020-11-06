@@ -1,7 +1,6 @@
 package crypto;
 
 import java.io.IOException;
-
 import java.util.Arrays;
 
 import static crypto.Helper.*;
@@ -22,6 +21,7 @@ public class Main {
 		byte[] cipherBytes= Encrypt.cbc(plainBytes, pad);
 		System.out.println(Arrays.toString(cipherBytes));
 /*
+
 		
 		String inputMessage = Helper.readStringFromFile("text_one.txt");
 		String key = "2cF%5";

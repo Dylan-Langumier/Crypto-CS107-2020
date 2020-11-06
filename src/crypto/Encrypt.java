@@ -3,7 +3,6 @@ package crypto;
 import java.util.ArrayList;
 import java.util.Random;
 
-
 public class Encrypt {
 	
 	public static final int CAESAR = 0;
