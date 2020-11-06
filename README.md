@@ -2,11 +2,15 @@
 
 ## About
 
-TODO: complete
+EPFL's CS107 Mini Project 1 is a project about discovering cryptography and basic ciphers. You can crypt, decrypt and break Caesar, Vigenere, OTP, CBC.
+A shell is also available, type 'help' for more informations about the commands.
 
 ## Usage
 
 ```java
 // Encrypt a string chain
-Encrypt.euh TODO: complete
+Encrypt.encrypt(message, key, type)
+
+// Decrypt without knowing the key
+Decrypt.breakCipher(cipher, type)
 ```
