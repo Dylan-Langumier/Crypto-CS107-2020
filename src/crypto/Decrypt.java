@@ -68,8 +68,7 @@ public class Decrypt {
 	 */
 	public static byte caesarWithFrequencies(byte[] cipherText) {
 		float[] frequencies = computeFrequencies(cipherText);
-		byte key = caesarFindKey(frequencies);
-		return key;
+		return caesarFindKey(frequencies);
 	}
 	
 	/**
@@ -159,9 +158,7 @@ public class Decrypt {
 	public static byte[] vigenereWithFrequencies(byte[] cipher) {
 		int keyLength = vigenereFindKeyLength(removeSpaces(cipher));
 		byte[] key = vigenereFindKey(removeSpaces(cipher), keyLength);
-		byte[] decryptedCipher = Encrypt.vigenere(cipher, key);
-
-		return decryptedCipher;
+		return Encrypt.vigenere(cipher, key);
 	}
 	
 	
