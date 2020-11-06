@@ -1,5 +1,6 @@
 package crypto;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Encrypt {
@@ -30,24 +31,23 @@ public class Encrypt {
 		byte[] bytesKey = Helper.stringToBytes(key);
 		String result = message;
 		switch(type) {
-			case 0:
+			case CAESAR: // 0
 				result = Helper.bytesToString(caesar(bytesMessage, bytesKey[0]));
 				break;
-			case 1:
+			case VIGENERE: // 1
 				result = Helper.bytesToString(vigenere(bytesMessage, bytesKey));
 				break;
-			case 2:
+			case XOR: // 2
 				result = Helper.bytesToString(xor(bytesMessage, bytesKey[0]));
 				break;
-			case 3:
+			case ONETIME: // 3
 				result = Helper.bytesToString(oneTimePad(bytesMessage, bytesKey));
 				break;
-			case 4:
+			case CBC: // 4
 				result = Helper.bytesToString(cbc(bytesMessage, bytesKey));
 				break;
 		}
 		return result;
-		// TODO: COMPLETE THIS METHOD
 	}
 	
 	
@@ -63,12 +63,12 @@ public class Encrypt {
 	 */
 	public static byte[] caesar(byte[] plainText, byte key, boolean spaceEncoding) {
 		assert(plainText != null);
-		byte[] cipherByte = new byte[plainText.length];
+		byte[] cipherBytes = new byte[plainText.length];
 		for (int i = 0 ; i < plainText.length; i++) {
-			if(!spaceEncoding && plainText[i] == (byte) 32) cipherByte[i] = (byte) 32;
-			else cipherByte[i] = (byte) (plainText[i] + key);
+			if(!spaceEncoding && plainText[i] == SPACE) cipherBytes[i] = SPACE;
+			else cipherBytes[i] = (byte) (plainText[i] + key);
 		}
-		return cipherByte;
+		return cipherBytes;
 	}
 	
 	/**
@@ -94,13 +94,12 @@ public class Encrypt {
 	 */
 	public static byte[] xor(byte[] plainText, byte key, boolean spaceEncoding) {
 		assert(plainText != null);
-
-		byte[] cipherByte = new byte[plainText.length];
+		byte[] cipherBytes = new byte[plainText.length];
 		for (int i = 0 ; i < plainText.length; i++) {
-			if(!spaceEncoding && plainText[i] == (byte) 32) cipherByte[i] = (byte) 32;
-			else cipherByte[i] = (byte) (plainText[i] ^ key);
+			if(!spaceEncoding && plainText[i] == SPACE) cipherBytes[i] = SPACE;
+			else cipherBytes[i] = (byte) (plainText[i] ^ key);
 		}
-		return cipherByte;
+		return cipherBytes;
 	}
 	/**
 	 * Method to encode a byte array using a XOR with a single byte long key
@@ -109,7 +108,6 @@ public class Encrypt {
 	 * @return an encoded byte array
 	 */
 	public static byte[] xor(byte[] plainText, byte key) {
-
 		return xor(plainText, key, false);
 	}
 	//-----------------------Vigenere-------------------------
@@ -118,25 +116,24 @@ public class Encrypt {
 	 * Method to encode a byte array using a byte array keyword
 	 * The keyword is repeated along the message to encode
 	 * The bytes of the keyword are added to those of the message to encode
-	 * @param plainText the byte array representing the message to encode
-	 * @param keyword the byte array representing the key used to perform the shift
+	 * @param plainText     the byte array representing the message to encode
+	 * @param keyword       the byte array representing the key used to perform the shift
 	 * @param spaceEncoding if false, then spaces are not encoded
 	 * @return an encoded byte array 
 	 */
 	public static byte[] vigenere(byte[] plainText, byte[] keyword, boolean spaceEncoding) {
 		assert(plainText != null);
-
-		byte[] cipherByte = new byte[plainText.length];
+		byte[] cipherBytes = new byte[plainText.length];
 		int spaceAmount = 0;
 		for (int i = 0; i < plainText.length; i++) {
-			if (!spaceEncoding && plainText[i] == (byte) 32) {
-				cipherByte[i] = (byte) 32;
+			if (!spaceEncoding && plainText[i] == SPACE) {
+				cipherBytes[i] = SPACE;
 				spaceAmount += 1;
 			} else {
-				cipherByte[i] =  (byte) (plainText[i] + keyword[(i- spaceAmount)%keyword.length]);
+				cipherBytes[i] =  (byte) (plainText[i] + keyword[(i- spaceAmount)%keyword.length]);
 			}
 		}
-		return cipherByte;
+		return cipherBytes;
 	}
 	
 	/**
@@ -165,8 +162,12 @@ public class Encrypt {
 	 * @return an encoded byte array
 	 */
 	public static byte[] oneTimePad(byte[] plainText, byte[] pad) {
-		// TODO: COMPLETE THIS METHOD
-		return null; // TODO: to be modified
+		assert(plainText != null && plainText.length == pad.length);
+		byte[] cipherBytes = new byte[plainText.length];
+		for(int i = 0; i < plainText.length; i++) {
+			cipherBytes[i] = (byte) (plainText[i]^pad[i]);
+		}
+		return cipherBytes;
 	}
 	
 	
@@ -181,24 +182,45 @@ public class Encrypt {
 	 * @return an encoded byte array
 	 */
 	public static byte[] cbc(byte[] plainText, byte[] iv) {
-		// TODO: COMPLETE THIS METHOD
-		
-		return null; // TODO: to be modified
+		int iterations = plainText.length/iv.length;
+		if (plainText.length % iv.length != 0) iterations++;
+
+		ArrayList<Byte> cipherList = new ArrayList<>();
+		byte[][] plainBlocks = new byte[iterations][iv.length];
+		byte[][] cipherBlocks = new byte[iterations][iv.length];
+		byte[] cipherBytes = new byte[plainText.length];
+
+		for(int i = 0; i< iterations; i++) {
+			plainBlocks[i] = Main.trim(plainText, (i+1)*iv.length, true);
+			plainBlocks[i] = Main.trim(plainBlocks[i], i*iv.length);
+			if (i != 0) {
+				cipherBlocks[i] = oneTimePad(plainBlocks[i], cipherBlocks[i-1]);
+			} else {
+				cipherBlocks[i] = oneTimePad(plainBlocks[i], iv);
+			}
+		}
+
+		for (int i = 0; i < iterations; i++) {
+			for (int j = 0; j < iv.length; j++) {
+				cipherList.add(cipherBlocks[i][j]);
+			}
+		}
+
+		for(int i=0; i < plainText.length; i++) {
+			cipherBytes[i] = cipherList.get(i);
+		}
+		return cipherBytes;
 	}
-	
-	
 	/**
 	 * Generate a random pad/IV of bytes to be used for encoding
 	 * @param size the size of the pad
 	 * @return random bytes in an array
 	 */
 	public static byte[] generatePad(int size) {
-		// TODO: COMPLETE THIS METHOD
-
-		return null; // TODO: to be modified
-
+		byte[] pad = new byte[size];
+		for(int i = 0; i < size; i++) {
+			pad[i] = (byte) rand.nextInt(256);
+		}
+		return pad;
 	}
-	
-	
-	
 }
