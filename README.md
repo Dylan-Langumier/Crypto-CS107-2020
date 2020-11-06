@@ -7,6 +7,6 @@ TODO: complete
 ## Usage
 
 ```java
-Encrypt a string chain
+// Encrypt a string chain
 Encrypt.euh TODO: complete
 ```
