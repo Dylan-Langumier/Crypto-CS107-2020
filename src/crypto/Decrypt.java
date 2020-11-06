@@ -136,9 +136,8 @@ public class Decrypt {
 
 		return (byte) (highestIndex - 97 - 128);
 	}
-	
-	
-	
+
+
 	//-----------------------XOR-------------------------
 	
 	/**
@@ -291,18 +290,26 @@ public class Decrypt {
 		if (cipher.length % iv.length != 0) iterations++;
 
 		ArrayList<Byte> plainList = new ArrayList<>();
-		byte[][] blocks = new byte[iterations][iv.length];
+		byte[][] cipherBlocks = new byte[iterations][iv.length];
 		byte[][] plainBlocks = new byte[iterations][iv.length];
 		byte[] plainBytes = new byte[cipher.length];
 		for(int i = 0; i< iterations; i++) {
-			blocks[i] = Main.trim(cipher, (i+1)*iv.length, true);
-			blocks[i] = Main.trim(blocks[i], i*iv.length);
+			cipherBlocks[i] = Main.trim(cipher, (i+1)*iv.length, true);
+			cipherBlocks[i] = Main.trim(cipherBlocks[i], i*iv.length);
 			if (i != 0) {
-				plainBlocks[i] = Encrypt.oneTimePad(blocks[i], plainBlocks[i-1]);
+				plainBlocks[i] = Encrypt.oneTimePad(cipherBlocks[i], cipherBlocks[i-1]);
 			} else {
-				plainBlocks[i] = Encrypt.oneTimePad(blocks[i], iv);
+				plainBlocks[i] = Encrypt.oneTimePad(cipherBlocks[i], iv); // m1
 			}
 		}
-		return null; //TODO: to be modified
+		for (int i = 0; i < iterations; i++) {
+			for (int j = 0; j < iv.length; j++) {
+				plainList.add(plainBlocks[i][j]);
+			}
+		}
+		for(int i=0; i < cipher.length; i++) {
+			plainBytes[i] = plainList.get(i);
+		}
+		return plainBytes;
 	}
 }
