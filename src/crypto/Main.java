@@ -12,61 +12,44 @@ import static crypto.Helper.*;
  * Bonus: CBC with encryption, shell
  */
 public class Main {
-	
-	
+
 	//---------------------------MAIN---------------------------
-	public static void main(String[] args) throws IOException {
-		byte[] plainBytes= {98, 111, 110, 110, 101, 32};
-		byte[] pad= { 1,   2,   3};
-		byte[] cipherBytes= Encrypt.cbc(plainBytes, pad);
-		System.out.println(Arrays.toString(cipherBytes));
-/*
+	public static void main(String[] args) {
+		// Shell.main();
 
-		
-		String inputMessage = Helper.readStringFromFile("text_one.txt");
 		String key = "2cF%5";
-		
-		String messageClean = cleanString(inputMessage);
-
-		byte[] messageBytes = stringToBytes(messageClean);
 		byte[] keyBytes = stringToBytes(key);
-		
-		System.out.println("Original input sanitized : " + messageClean);
-		System.out.println();
-		
-		System.out.println("------Caesar------");
-		testCaesar(messageBytes, keyBytes[0]);
-		System.out.println("------Vigenere------");
-		testVigenere(new byte[]{98, 111, 110, 110, 101, 32, 106, 111, 117, 114, 110, -23, 101}, new byte[]{1, 2, 3});
-		System.out.println("------XOR------");
-		testXor(new byte[]{1}, new byte[]{2});
-		// TODO: TO BE COMPLETED
-    
-    // SHELL
-		BufferedReader reader = new BufferedReader(new InputStreamReader((System.in)));
-		String[] input;
-		boolean isFinished = false;
-		try {
-			while(!isFinished) {
-				System.out.println("Voulez vous terminer votre programme? [Oui/Non]");
-				String s = reader.readLine();
-				if (s.equals("Oui")) {
-					isFinished = true;
-				} else {
-					System.out.println("Le programme ne se termine pas.");
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+
+		String[] plainMessage = new String[3];
+		String[] cleanedMessage = new String[3];
+		byte[][] bytesMessage = new byte[3][];
+
+		plainMessage[0] = readStringFromFile("text_one.txt");
+		plainMessage[1] = readStringFromFile("text_two.txt");
+		plainMessage[2] = readStringFromFile("text_three.txt");
+
+		for (int i = 0; i <= 2; i++) {
+			cleanedMessage[i] = cleanString(plainMessage[i]);
+			bytesMessage[i] = stringToBytes(cleanedMessage[i]);
 		}
 
-*/
+		// Testing all algorithms with there respective methods
+		for (int i = 0; i <= 2; i++) {
+			System.out.println("------ TEXT " + i + " ------");
+			System.out.println("Original input sanitized : " + cleanedMessage[i]);
+			testCaesar(bytesMessage[i], keyBytes[0],i);
+			testVigenere(bytesMessage[i], keyBytes);
+			testXor(bytesMessage[i], keyBytes[0],i);
+			testOTP(bytesMessage[i], Encrypt.generatePad(bytesMessage[i].length));
+			testCBC(bytesMessage[i], keyBytes);
+		}
 
 	}
 
 	//Run the Encoding and Decoding using the caesar pattern 
-	public static void testCaesar(byte[] string , byte key) {
-		//Encoding
+	public static void testCaesar(byte[] string , byte key, int index) {
+		System.out.println("------ Caesar ------");
+
 		byte[] result = Encrypt.caesar(string, key);
 		String s = bytesToString(result);
 		System.out.println("Encoded : " + s);
@@ -78,32 +61,74 @@ public class Main {
 		//Decoding without key
 		byte[][] bruteForceResult = Decrypt.caesarBruteForce(result);
 		String sDA = Decrypt.arrayToString(bruteForceResult);
-		Helper.writeStringToFile(sDA, "bruteForceCaesar.txt");
+		Helper.writeStringToFile(sDA, "bruteForceCaesar-" + index + ".txt");
 
 		byte decodingKey = Decrypt.caesarWithFrequencies(result);
 		String sFD = bytesToString(Encrypt.caesar(result, (byte) (-decodingKey)));
 		System.out.println("Decoded without knowing the key : " + sFD);
 	}
 
+	//Run the Encoding and Decoding using the vigenere pattern
 	public static void testVigenere(byte[] string, byte[] key) {
-		String plainText = "bonne journée";
-		byte[] plainBytes = Helper.stringToBytes(plainText);//98, 111, 110, 110, 101, 32, 106, 111, 117, 114, 110, -23, 101
-		byte[] keypad = {(byte) 1, (byte) 2, (byte) 3 };
-		byte[] cipherBytes = Encrypt.vigenere(plainBytes, keypad, true);
-		String cipherText = Helper.bytesToString(cipherBytes);
-		System.out.println(cipherText);
-		// todo: various improvements
+		System.out.println("------ Vigenere ------");
+
+		//Encoding
+		byte[] result = Encrypt.vigenere(string, key);
+		String s = bytesToString(result);
+		System.out.println("Encoded : " + s);
+
+		//Decoding with key
+		String sD = bytesToString(Decrypt.vigenereWithFrequencies(result));
+		System.out.println("Decoded with frequencies : " + sD);
 	}
 
-	public static void testXor(byte[] string, byte[] key) {
-		byte[] plainBytes = {98, 111, 110, 110, 101, 32, 106, 111, 117, 114, 110, -23, 101};
-		byte[] cipherBytes = Encrypt.xor(plainBytes, (byte) 7, true);
-		System.out.println(
-				Arrays.toString(plainBytes) + "\n" +
-				Arrays.toString(cipherBytes) + "\n" +
-				Helper.bytesToString(cipherBytes));
-		// todo: various improvements
+	//Run the Encoding and Decoding using the xor pattern
+	public static void testXor(byte[] string, byte key, int index) {
+		System.out.println("------ XOR ------");
+		//Encoding
+		byte[] result = Encrypt.xor(string, key);
+		String s = bytesToString(result);
+		System.out.println("Encoded : " + s);
+
+		//Decoding with key
+		String sD = bytesToString(Encrypt.xor(result, key));
+		System.out.println("Decoded knowing the key : " + sD);
+
+
+		//Decoding without key
+		byte[][] bruteForceResult = Decrypt.xorBruteForce(result);
+		String sDA = Decrypt.arrayToString(bruteForceResult);
+		Helper.writeStringToFile(sDA, "bruteForceXor-" + index + ".txt");
 	}
+
+	//Run the Encoding and Decoding using the one time pad pattern
+	public static void testOTP(byte[] string, byte[] key) {
+		System.out.println("------ One Time Pad ------");
+
+		//Encoding
+		byte[] result = Encrypt.oneTimePad(string, key);
+		String s = bytesToString(result);
+		System.out.println("Encoded : " + s);
+
+		//Decoding with key
+		String sD = bytesToString(Encrypt.oneTimePad(result, key));
+		System.out.println("Decoded knowing the key : " + sD);
+	}
+
+	//Run the Encoding and Decoding using the cipher block chaining pattern
+	public static void testCBC(byte[] string, byte[] key) {
+		System.out.println("------ Cipher Block Chaining ------");
+
+		//Encoding
+		byte[] result = Encrypt.cbc(string, key);
+		String s = bytesToString(result);
+		System.out.println("Encoded : " + s);
+
+		//Decoding with key
+		String sD = bytesToString(Decrypt.decryptCBC(result, key));
+		System.out.println("Decoded knowing key : " + sD);
+	}
+
 	/**
 	 * Method to remove the first (last) elements of an array
 	 * @param array the array to trim
@@ -114,11 +139,8 @@ public class Main {
 	 */
 	public static byte[] trim(byte[] array, int bound, boolean end) {
 		byte[] result;
-		if (!end) {
-			result = Arrays.copyOfRange(array, bound, array.length);
-		} else {
-			result = Arrays.copyOfRange(array, 0, bound);
-		}
+		if (!end) result = Arrays.copyOfRange(array, bound, array.length);
+		else result = Arrays.copyOfRange(array, 0, bound);
 		return result;
 	}
 	public static byte[] trim(byte[] array, int bound) {
