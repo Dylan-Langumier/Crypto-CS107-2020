@@ -2,7 +2,7 @@
 
 ## About
 
-EPFL's CS107 Mini Project 1 is a project about discovering cryptography and basic ciphers. You can crypt, decrypt and break Caesar, Vigenere, OTP, CBC ciphers.
+EPFL's CS107 Mini Project 1 is a project about discovering cryptography and basic ciphers. You can cipher, decipher and break Caesar, Vigenere, XOR, One-Time-Pad and CBC ciphers.
 
 ## Bonus : A shell
 
