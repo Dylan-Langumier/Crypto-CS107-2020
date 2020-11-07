@@ -1,15 +1,13 @@
 package crypto;
 
-
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static crypto.Encrypt.SPACE;
+
 public class Decrypt {
-	
-	
 	public static final int ALPHABETSIZE = Byte.MAX_VALUE - Byte.MIN_VALUE + 1 ; //256
 	public static final int APOSITION = 97 + ALPHABETSIZE/2; 
 	
@@ -38,23 +36,19 @@ public class Decrypt {
 		}
 		return result;
 	}
-	
-	
+
 	/**
 	 * Converts a 2D byte array to a String
 	 * @param bruteForceResult a 2D byte array containing the result of a brute force method
 	 */
 	public static String arrayToString(byte[][] bruteForceResult) {
 		StringBuilder decipherText = new StringBuilder();
-		for (byte[] bytes : bruteForceResult) {
+		for (byte[] bytes : bruteForceResult)
 			decipherText.append(Helper.bytesToString(bytes)).append("\n");
-		}
 		return decipherText.toString();
 	}
-	
-	
+
 	//-----------------------Caesar-------------------------
-	
 	/**
 	 *  Method to decode a byte array  encoded using the Caesar scheme
 	 * This is done by the brute force generation of all the possible options
@@ -63,13 +57,11 @@ public class Decrypt {
 	 */
 	public static byte[][] caesarBruteForce(byte[] cipher) {
 		assert(cipher != null);
-		byte[][] results = new byte[256][cipher.length];
-		for(int i = 0; i < 256; i++) {
+		byte[][] results = new byte[ALPHABETSIZE][cipher.length];
+		for(int i = 0; i < ALPHABETSIZE; i++)
 			results[i] = Encrypt.caesar(cipher, (byte) i);
-		}
 		return results; 
-	}	
-	
+	}
 	
 	/**
 	 * Method that finds the key to decode a Caesar encoding by comparing frequencies
@@ -88,58 +80,49 @@ public class Decrypt {
 	 */
 	public static float[] computeFrequencies(byte[] cipherText) {
 
-		float[] frequencies = new float[256];
+		float[] frequencies = new float[ALPHABETSIZE];
 		// count each character
 		for (int i = 0; i < cipherText.length; i++) {
 			int value = cipherText[i];
 			frequencies[value+128]++;
 		}
-
 		// get frequencies
-		for (int i = 0; i < 256; i++) {
+		for (int i = 0; i < ALPHABETSIZE; i++) {
 			if (frequencies[i] != 0) {
 				frequencies[i] /= cipherText.length;
 			}
 		}
 		return frequencies;
 	}
-	
-	
+
 	/**
 	 * Method that finds the key used by a  Caesar encoding from an array of character frequencies
 	 * @param charFrequencies the array of character frequencies
 	 * @return the key
 	 */
 	public static byte caesarFindKey(float[] charFrequencies) {
-
 		// frequencies analysis
-		float[] iterations = new float[256];
+		float[] iterations = new float[ALPHABETSIZE];
 		for (int i = 0; i < 26; i++) {
-			for (int j = 0; j < 256; j++) {
+			for (int j = 0; j < ALPHABETSIZE; j++) {
 				int index = i + j;
-				if (index > 255) {
-					index = index - 256;
-				}
+				if (index > 255) index = index - ALPHABETSIZE;
 				iterations[j] += ENGLISHFREQUENCIES[i] * charFrequencies[index];
 			}
 		}
-
 		// find highest value
 		int highestIndex = 0;
 		float highest = 0;
-		for (int i = 0; i < 256; i++) {
+		for (int i = 0; i < ALPHABETSIZE; i++) {
 			if (iterations[i] > highest) {
 				highest = iterations[i];
 				highestIndex = i;
 			}
 		}
-
 		return (byte) (highestIndex - 97 - 128);
 	}
 
-
 	//-----------------------XOR-------------------------
-	
 	/**
 	 * Method to decode a byte array encoded using a XOR 
 	 * This is done by the brute force generation of all the possible options
@@ -148,14 +131,12 @@ public class Decrypt {
 	 */
 	public static byte[][] xorBruteForce(byte[] cipher) {
 		assert(cipher != null);
-		byte[][] results = new byte[256][cipher.length];
-		for(int i = 0; i < 256; i++) {
+		byte[][] results = new byte[ALPHABETSIZE][cipher.length];
+		for(int i = 0; i < ALPHABETSIZE; i++)
 			results[i] = Encrypt.xor(cipher, (byte) i);
-		}
 		return results;
 	}
-	
-	
+
 	//-----------------------Vigenere-------------------------
 	// Algorithm : see  https://www.youtube.com/watch?v=LaWp_Kq0cKs	
 	/**
@@ -169,9 +150,7 @@ public class Decrypt {
 		byte[] key = vigenereFindKey(removeSpaces(cipher), keyLength);
 		return Encrypt.vigenere(cipher, key);
 	}
-	
-	
-	
+
 	/**
 	 * Helper Method used to remove the space character in a byte array for the clever Vigenere decoding
 	 * @param array the array to clean
@@ -179,15 +158,11 @@ public class Decrypt {
 	 */
 	public static List<Byte> removeSpaces(byte[] array){
 		List<Byte> cipher = new ArrayList<>();
-		for (int i = 0; i < array.length; i++) {
-			if (array[i] != (byte) 32) {
-				cipher.add(array[i]);
-			}
-		}
+		for (int i = 0; i < array.length; i++)
+			if (array[i] != SPACE) cipher.add(array[i]);
 		return cipher;
 	}
-	
-	
+
 	/**
 	 * Method that computes the key length for a Vigenere cipher text.
 	 * @param cipher the byte array representing the encoded text without space
@@ -196,64 +171,47 @@ public class Decrypt {
 	public static int vigenereFindKeyLength(List<Byte> cipher) {
 		// find coincidences
 		int[] coincidences = new int[cipher.size()];
-		for (int i = 0; i < cipher.size(); i++) {
+		for (int i = 0; i < cipher.size(); i++)
 			coincidences[i] = 0;
-		}
 		for (int i = 0; i < cipher.size(); i++) {
-			for (int index = 0; index < i; index++) {
-				if (cipher.get(i).equals(cipher.get(index))) {
+			for (int index = 0; index < i; index++)
+				if (cipher.get(i).equals(cipher.get(index)))
 					coincidences[i - index - 1]++;
-				}
-			}
 		}
-
 		// find local maximums
-		// todo: ceil only for tables with odd size I think
-		List<Integer> maximumsIndex = new ArrayList<Integer>();
+		List<Integer> maximumsIndex = new ArrayList<>();
 		for (int i = 0; i < Math.ceil(coincidences.length / 2.0); i++) {
 			if (i == 0) {
-				if (coincidences[i] >= coincidences[1] && coincidences[i] >= coincidences[2]) {
+				if (coincidences[i] >= coincidences[1] && coincidences[i] >= coincidences[2])
 					maximumsIndex.add(i);
-				}
 			} else if (i == 1) {
-				if (coincidences[i] >= coincidences[2] && coincidences[i] >= coincidences[3] && coincidences[i] >= coincidences[0]) {
+				if (coincidences[i] >= coincidences[2] && coincidences[i] >= coincidences[3] && coincidences[i] >= coincidences[0])
 					maximumsIndex.add(i);
-				}
-			} else if (coincidences[i] >= coincidences[i + 1] && coincidences[i] >= coincidences[i + 2] && coincidences[i] >= coincidences[i - 1] && coincidences[i] >= coincidences[i - 2]) {
+			} else if (coincidences[i] >= coincidences[i + 1] && coincidences[i] >= coincidences[i + 2] && coincidences[i] >= coincidences[i - 1] && coincidences[i] >= coincidences[i - 2])
 				maximumsIndex.add(i);
-			}
-		}
 
-		// TODO: cleanup this mess done at 1am lmao
+		}
 		if (maximumsIndex.size() > 1) {
 			// set distances in a hashmap
 			Map<Integer, Integer> distance = new HashMap<>();
 			for (int i = 0; i < maximumsIndex.size() - 1; i++) {
 				int dist = maximumsIndex.get(i+1) - maximumsIndex.get(i);
-				if (dist == 1) {
+				if (dist == 1)
+					//noinspection SuspiciousListRemoveInLoop
 					maximumsIndex.remove(i);
-				}
-				if (!distance.containsKey(dist) && dist != 1) {
+				if (!distance.containsKey(dist) && dist != 1)
 					distance.put(dist, 1);
-				} else {
-					for (Map.Entry<Integer, Integer> item : distance.entrySet()) {
-						if (item.getKey() == dist) {
-							item.setValue(item.getValue() + 1);
-						}
-					}
+				else for (Map.Entry<Integer, Integer> item : distance.entrySet()) {
+					if (item.getKey() == dist)
+						item.setValue(item.getValue() + 1);
 				}
 			}
-
 			// get key length
 			return Helper.getHighest(distance);
-		} else {
-			// return distance to the origin when there is only one maximums
-			return maximumsIndex.get(0)+1;
-		}
+		// return distance to the origin when there is only one maximums
+		} else return maximumsIndex.get(0) + 1;
 	}
 
-	
-	
 	/**
 	 * Takes the cipher without space, and the key length, and uses the dot product with the English language frequencies 
 	 * to compute the shifting for each letter of the key
@@ -263,22 +221,16 @@ public class Decrypt {
 	 */
 	public static byte[] vigenereFindKey(List<Byte> cipher, int keyLength) {
 		byte[][] caesarKey = new byte[keyLength][cipher.size()/keyLength];
-		for (int i = 0; i < keyLength; i++) {
-			for (int j = 0; j < (cipher.size()/keyLength); j++) {
+		for (int i = 0; i < keyLength; i++)
+			for (int j = 0; j < (cipher.size() / keyLength); j++)
 				caesarKey[i][j] = cipher.get((keyLength * j) + i);
-			}
-		}
-
 		byte[] keys = new byte[keyLength];
-		for (int i = 0; i < keyLength; i++) {
+		for (int i = 0; i < keyLength; i++)
 			keys[i] = (byte) -(caesarWithFrequencies(caesarKey[i]));
-		}
 		return keys;
 	}
-	
-	
+
 	//-----------------------Basic CBC-------------------------
-	
 	/**
 	 * Method used to decode a String encoded following the CBC pattern
 	 * @param cipher the byte array representing the encoded text
@@ -296,20 +248,14 @@ public class Decrypt {
 		for(int i = 0; i< iterations; i++) {
 			cipherBlocks[i] = Main.trim(cipher, (i+1)*iv.length, true);
 			cipherBlocks[i] = Main.trim(cipherBlocks[i], i*iv.length);
-			if (i != 0) {
-				plainBlocks[i] = Encrypt.oneTimePad(cipherBlocks[i], cipherBlocks[i-1]);
-			} else {
-				plainBlocks[i] = Encrypt.oneTimePad(cipherBlocks[i], iv); // m1
-			}
-		}
-		for (int i = 0; i < iterations; i++) {
-			for (int j = 0; j < iv.length; j++) {
+			if (i != 0)
+				plainBlocks[i] = Encrypt.oneTimePad(cipherBlocks[i], cipherBlocks[i - 1]);
+			else plainBlocks[i] = Encrypt.oneTimePad(cipherBlocks[i], iv);
+			for (int j = 0; j < iv.length; j++)
 				plainList.add(plainBlocks[i][j]);
-			}
 		}
-		for(int i=0; i < cipher.length; i++) {
+		for(int i=0; i < cipher.length; i++)
 			plainBytes[i] = plainList.get(i);
-		}
 		return plainBytes;
 	}
 }
